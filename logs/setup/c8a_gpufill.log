@@ -1,0 +1,16 @@
+before: driver says free 3296 MiB of 4096 MiB
+allocation stopped by: OutOfMemoryError
+allocated 7104 MiB in 111 chunks (physical card: 4096 MiB, free at start 3296 MiB)
+Traceback (most recent call last):
+  File "/home/hittu/kv-offload/scripts/checks/c8a_gpufill.py", line 18, in <module>
+    print(f"read speed first chunk: {rd(chunks[0]):7.1f} GB/s   last chunk: {rd(chunks[-1]):7.1f} GB/s")
+  File "/home/hittu/kv-offload/scripts/checks/c8a_gpufill.py", line 15, in rd
+    torch.cuda.synchronize(); s = time.perf_counter()
+  File "/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/torch/cuda/__init__.py", line 1162, in synchronize
+    return torch._C._cuda_synchronize()
+torch.AcceleratorError: CUDA error: out of memory
+Search for `cudaErrorMemoryAllocation' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+

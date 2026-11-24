@@ -1,0 +1,16 @@
+[run_exp] 2026-11-19 20:33:12 args: --out /home/hittu/kv-offload/results/exp/pilot.jsonl --tasks niah_single_2 --n 1
+154 MiB, 4096 MiB, 65
+               total        used        free      shared  buff/cache   available
+Mem:            5925         499        4615           1         809        5256
+Swap:          12288         202       12085
+[setup] VRAM: card 4096 MiB, free at start 3296 MiB -> PyTorch hard limit 3040 MiB
+[setup] model loaded: 1350 MiB on GPU | RAM used 3044 MiB, avail 2634 MiB, swap used 202 MiB
+[run] already done: 0 | eos ids [151643, 151645] | out /home/hittu/kv-offload/results/exp/pilot.jsonl
+2026-11-19 20:35:40   4096 niah_single_2    #0 gpu          ok       ctx 3319 kept 3319 | prefill 16.6s ttft 18.2s | decode 3.135 tok/s (83 tok) | GPU 1875 MiB | RSS 3319 MiB swap+0 | score 1.00 | ' **5663623**. \n\nThis number is highlighted in the section where the te'
+2026-11-19 20:36:30   4096 niah_single_2    #0 offload      ok       ctx 3319 kept 3319 | prefill 19.3s ttft 20.0s | decode 3.742 tok/s (83 tok) | GPU 1525 MiB | RSS 3702 MiB swap+0 | score 1.00 | ' **5663623**. \n\nThis number is highlighted in the section where the te'
+2026-11-19 20:37:05   4096 niah_single_2    #0 stream_1024  ok       ctx 3319 kept 1024 | prefill 23.0s ttft 23.6s | decode 4.875 tok/s (37 tok) | GPU 1624 MiB | RSS 3407 MiB swap+0 | score 1.00 | ':\n\n**5663623**\n\nThis number is highlighted in the section of the text '
+2026-11-19 20:37:36   4096 niah_single_2    #0 stream_2048  ok       ctx 3319 kept 2048 | prefill 22.9s ttft 23.6s | decode 3.426 tok/s (11 tok) | GPU 1736 MiB | RSS 3407 MiB swap+0 | score 1.00 | ' **5663623**.'
+2026-11-19 20:38:19   4096 niah_single_2    #0 snapkv_1024  ok       ctx 3319 kept 1024 | prefill 29.5s ttft 30.1s | decode 4.077 tok/s (45 tok) | GPU 1624 MiB | RSS 3440 MiB swap+0 | score 0.00 | ' **5663**.\n\nThis number is mentioned in the context of "special magic '
+2026-11-19 20:39:49   4096 niah_single_2    #0 snapkv_2048  ok       ctx 3319 kept 2048 | prefill 36.1s ttft 37.5s | decode 2.566 tok/s (128 tok) | GPU 1736 MiB | RSS 3440 MiB swap+0 | score 1.00 | ' **5663623**.\n\nThis number is mentioned in the context of a "special m'
+2026-11-19 20:44:09   8192 niah_single_2    #0 gpu          ok       ctx 8034 kept 8034 | prefill 138.7s ttft 141.2s | decode 0.796 tok/s (91 tok) | GPU 2555 MiB | RSS 3446 MiB swap+0 | score 1.00 | ' **7210606**. This number is described as a "special magic number for '
+[run_exp] finished 2026-11-19 20:46:12 exit 143

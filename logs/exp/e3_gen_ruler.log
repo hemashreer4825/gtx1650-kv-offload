@@ -1,0 +1,44 @@
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+ModuleNotFoundError: No module named 'tenacity'
+Successfully installed tenacity-9.2.1
+RULER commit: db43f92ff634bbce1c33d1fb15858aec4bba509a
+4096 niah_single_2: exit 0, 23 s, 5 samples
+4096 niah_multikey_1: exit 0, 25 s, 5 samples
+4096 niah_multivalue: exit 0, 25 s, 5 samples
+4096 vt: exit 0, 8 s, 5 samples
+8192 niah_single_2: exit 0, 20 s, 5 samples
+8192 niah_multikey_1: exit 0, 23 s, 5 samples
+8192 niah_multivalue: exit 0, 20 s, 5 samples
+8192 vt: exit 0, 9 s, 5 samples
+16384 niah_single_2: exit 0, 23 s, 5 samples
+16384 niah_multikey_1: exit 0, 26 s, 5 samples
+16384 niah_multivalue: exit 0, 25 s, 5 samples
+16384 vt: exit 0, 10 s, 5 samples
+20480 niah_single_2: exit 0, 25 s, 5 samples
+20480 niah_multikey_1: exit 0, 25 s, 5 samples
+20480 niah_multivalue: exit 0, 22 s, 5 samples
+20480 vt: exit 0, 9 s, 5 samples
+### sample check (token counts with the Qwen3 tokenizer)
+  4096 niah_single_2    n=5 input tokens 3330-3334 | answers e.g. ['5663623'] | in text: True
+  4096 niah_multikey_1  n=5 input tokens 3328-3953 | answers e.g. ['9683481'] | in text: True
+  4096 niah_multivalue  n=5 input tokens 3945-3950 | answers e.g. ['7273233', '3710343', '9897858', '1009594'] | in text: True
+  4096 vt               n=5 input tokens 4007-4014 | answers e.g. ['HFUPI', 'LRNUY', 'TRHRQ', 'CYGIU', 'DBZPT'] | in text: True
+  8192 niah_single_2    n=5 input tokens 8045-8049 | answers e.g. ['7210606'] | in text: True
+  8192 niah_multikey_1  n=5 input tokens 8046-8049 | answers e.g. ['2191066'] | in text: True
+  8192 niah_multivalue  n=5 input tokens 7468-8050 | answers e.g. ['8973915', '3770370', '5446912', '9852897'] | in text: True
+  8192 vt               n=5 input tokens 8112-8119 | answers e.g. ['LTVHU', 'MGLSG', 'IXCDJ', 'DFKIM', 'BVKUY'] | in text: True
+ 16384 niah_single_2    n=5 input tokens 16237-16241 | answers e.g. ['7210606'] | in text: True
+ 16384 niah_multikey_1  n=5 input tokens 16238-16241 | answers e.g. ['8930103'] | in text: True
+ 16384 niah_multivalue  n=5 input tokens 15652-16233 | answers e.g. ['8973915', '3770370', '5446912', '9852897'] | in text: True
+ 16384 vt               n=5 input tokens 16296-16302 | answers e.g. ['TMGGQ', 'TNQHC', 'HHIOD', 'GSSBK', 'OKFKX'] | in text: True
+ 20480 niah_single_2    n=5 input tokens 20333-20337 | answers e.g. ['5479144'] | in text: True
+ 20480 niah_multikey_1  n=5 input tokens 19755-20338 | answers e.g. ['8930103'] | in text: True
+ 20480 niah_multivalue  n=5 input tokens 19756-20336 | answers e.g. ['8973915', '3770370', '5446912', '9852897'] | in text: True
+ 20480 vt               n=5 input tokens 20402-20409 | answers e.g. ['IMBVK', 'UYAWO', 'MYHKX', 'VNTUX', 'MHMKR'] | in text: True
+--- example niah_single_2 start: "A special magic number is hidden within the following text. Make sure to memorize it. I will quiz you about the number afterwards.\nJuly 2010What hard liquor, cigarettes, heroin, and crack have in common is that they're all more concentrated forms of less addictive predecessors. Most if not all the t"
+--- end: 'test to hire, and one of the marks of a great founder is being able to resist this urge. "Paul Buchheit adds:"A related problem that I see a lot is premature scaling—founders take a small business that isn\'t really\nWhat is the special magic number for loving-cockroach mentioned in the provided text?'
+--- answer_prefix: ' The special magic number for loving-cockroach mentioned in the provided text is'
+--- example vt end: 's green. The sky is blue. The sun is yellow. Here we go. There and back again.\nThe grass is green. The sky is blue. The sun is yellow. Here we go. There and back again.\nQuestion: Find all variables that are assigned the value 70263 in the text above.'
+--- answer_prefix: ' Answer: According to the chain(s) of variable assignment in the text above, 5 variables are assigned the value 70263, they are: ' | outputs ['HFUPI', 'LRNUY', 'TRHRQ', 'CYGIU', 'DBZPT']
+4.3M	/home/hittu/kv-offload/data/ruler

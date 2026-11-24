@@ -1,0 +1,12 @@
+(a) .to('cpu', non_blocking=True) result pinned? True
+    .to('cpu') (blocking) result pinned? False
+(b) bandwidth, 128 MiB copies, GB/s:
+    CPU->GPU pageable:   6.78
+    CPU->GPU pinned  :   9.01
+    GPU->CPU pageable:   4.97
+    GPU->CPU pinned  :   9.53
+(c) pinned allocation test:
+    1 GiB pinned: OK  (1.5s)
+    2 GiB pinned: OK  (5.3s)
+    3 GiB pinned: FAILED  AcceleratorError: CUDA error: out of memory
+Search for `cudaErrorMemoryAllocation' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more i

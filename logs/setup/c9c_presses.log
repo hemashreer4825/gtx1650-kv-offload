@@ -1,0 +1,29 @@
+[setup] VRAM: card 4096 MiB, free at start 3296 MiB -> PyTorch hard limit 3040 MiB
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[setup] model loaded: 1351 MiB on GPU | RAM used 2894 MiB, avail 2796 MiB, swap used 3 MiB
+context: 4039 tokens; facts at 10% / 50% / 90% depth
+
+[no press (full KV cache)] ran OK in 34.1 s | KV tokens kept after compression: 4042 | peak GPU 2089 MiB
+    fact at 10% (start) : OK   answer: 'The secret code for the blue door is **7419**.'
+    fact at 50% (middle): OK   answer: "The name of the captain's cat is **Biscuit**."
+    fact at 90% (end)   : OK   answer: 'The treasure is buried under the old oak tree.'
+
+[StreamingLLM keep 50%] ran OK in 26.4 s | KV tokens kept after compression: 2021 | peak GPU 1868 MiB
+    fact at 10% (start) : MISS  answer: 'The secret code for the blue door is **Biscuit**.'
+    fact at 50% (middle): OK   answer: "The name of the captain's cat is **Biscuit**."
+    fact at 90% (end)   : OK   answer: 'The treasure is buried under the old oak tree.'
+
+[StreamingLLM+rerotation keep 50%] ran OK in 26.4 s | KV tokens kept after compression: 2021 | peak GPU 1867 MiB
+    fact at 10% (start) : MISS  answer: 'The secret code for the blue door is **Biscuit**.'
+    fact at 50% (middle): OK   answer: "The name of the captain's cat is **Biscuit**."
+    fact at 90% (end)   : OK   answer: 'The treasure is buried under the old oak tree.'
+
+[SnapKV keep 50%] ran OK in 25.3 s | KV tokens kept after compression: 2021 | peak GPU 1868 MiB
+    fact at 10% (start) : OK   answer: '7419'
+    fact at 50% (middle): OK   answer: "The name of the captain's cat is **Biscuit**."
+    fact at 90% (end)   : OK   answer: 'The treasure is buried under the old oak tree.'
+
+[SnapKV keep 25%] ran OK in 26.2 s | KV tokens kept after compression: 1010 | peak GPU 1757 MiB
+    fact at 10% (start) : OK   answer: 'The secret code for the blue door is **7419**.'
+    fact at 50% (middle): MISS  answer: "The name of the captain's cat is not provided in the text."
+    fact at 90% (end)   : OK   answer: 'The treasure is buried under the old oak tree.'

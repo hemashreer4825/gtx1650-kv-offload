@@ -1,0 +1,39 @@
+[run_exp] 2026-11-20 00:15:06 args: --out /home/hittu/kv-offload/results/exp/main.jsonl --n 1
+219 MiB, 4096 MiB, 61
+               total        used        free      shared  buff/cache   available
+Mem:            5925         496        4995           1         433        5228
+Swap:          12288         195       12092
+[setup] VRAM: card 4096 MiB, free at start 3296 MiB -> PyTorch hard limit 3040 MiB
+Traceback (most recent call last):
+  File "/home/hittu/kv-offload/scripts/exp/run_ruler.py", line 242, in <module>
+    main()
+  File "/home/hittu/kv-offload/scripts/exp/run_ruler.py", line 191, in main
+    model, tok, limit = load_model()
+  File "/home/hittu/kv-offload/scripts/exp/../checks/kvsetup.py", line 55, in load_model
+    model = AutoModelForCausalLM.from_pretrained(
+  File "/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/transformers/models/auto/auto_factory.py", line 374, in from_pretrained
+    return model_class.from_pretrained(
+  File "/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/transformers/modeling_utils.py", line 4072, in from_pretrained
+    loading_info, disk_offload_index = cls._load_pretrained_model(model, state_dict, checkpoint_files, load_config)
+  File "/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/transformers/modeling_utils.py", line 4191, in _load_pretrained_model
+    loading_info, disk_offload_index = convert_and_load_state_dict_in_model(
+  File "/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/transformers/core_model_loading.py", line 1209, in convert_and_load_state_dict_in_model
+    realized_value = mapping.convert(
+  File "/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/transformers/core_model_loading.py", line 677, in convert
+    collected_tensors = self.materialize_tensors()
+  File "/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/transformers/core_model_loading.py", line 653, in materialize_tensors
+    tensors = [future.result() for future in tensors if future.result() is not None]
+  File "/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/transformers/core_model_loading.py", line 653, in <listcomp>
+    tensors = [future.result() for future in tensors if future.result() is not None]
+  File "/usr/lib/python3.10/concurrent/futures/_base.py", line 451, in result
+    return self.__get_result()
+  File "/usr/lib/python3.10/concurrent/futures/_base.py", line 403, in __get_result
+    raise self._exception
+  File "/usr/lib/python3.10/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/transformers/core_model_loading.py", line 799, in _job
+    return _materialize_copy(tensor, device, dtype)
+  File "/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/transformers/core_model_loading.py", line 788, in _materialize_copy
+    tensor = tensor.to(device=device, dtype=dtype)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 24.00 MiB. GPU 0 has a total capacity of 4.00 GiB of which 250.45 MiB is free. Including non-PyTorch memory, this process has 17179869184.00 GiB memory in use. 2.97 GiB allowed; Of the allocated memory 2.95 GiB is allocated by PyTorch, and 16.26 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
+[run_exp] finished 2026-11-20 00:17:01 exit 1

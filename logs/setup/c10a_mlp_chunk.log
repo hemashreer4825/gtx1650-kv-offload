@@ -1,0 +1,13 @@
+[setup] VRAM: card 4096 MiB, free at start 3296 MiB -> PyTorch hard limit 3040 MiB
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[setup] model loaded: 1351 MiB on GPU | RAM used 3152 MiB, avail 2539 MiB, swap used 2 MiB
+
+(1) same 6144-token input, without vs with MLP chunking
+  without fix: peak GPU  2467 MiB | prefill  25.0 s | decode 3.57 tok/s
+  with fix   : peak GPU  2275 MiB | prefill  27.3 s | decode 3.61 tok/s
+  last-token logits: max abs diff 0.0343, top-1 same True
+  16 generated tokens identical: True
+
+(2) with fix: how long can the KV cache on GPU get?
+    8192 tok: OK      peak GPU  2579 MiB | prefill   41.6 s ( 197 tok/s) | decode 2.90 tok/s
+   10240 tok: FAILED  GPU out of memory (PyTorch limit 3040 MiB)

@@ -1,0 +1,5 @@
+pinned total before failure: 3392 MiB = 3.31 GiB   (stopped by: AcceleratorError: CUDA error: out of memory)
+               total        used        free      shared  buff/cache   available
+Mem:            5925         647         932        3471        4345        1634
+Swap:          12288           1       12286
+

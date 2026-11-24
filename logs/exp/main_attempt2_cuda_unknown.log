@@ -1,0 +1,65 @@
+[run_exp] 2026-11-20 00:18:22 args: --out /home/hittu/kv-offload/results/exp/main.jsonl --n 1
+223 MiB, 4096 MiB, 59
+               total        used        free      shared  buff/cache   available
+Mem:            5925         480        2410           1        3034        5278
+Swap:          12288         220       12067
+[setup] VRAM: card 4096 MiB, free at start 3296 MiB -> PyTorch hard limit 3040 MiB
+[setup] model loaded: 1350 MiB on GPU | RAM used 2895 MiB, avail 2785 MiB, swap used 385 MiB
+[run] already done: 0 | eos ids [151643, 151645] | out /home/hittu/kv-offload/results/exp/main.jsonl
+Traceback (most recent call last):
+  File "/home/hittu/kv-offload/scripts/exp/run_ruler.py", line 158, in run_one
+    out = model(input_ids=ids[-1].view(1, 1), past_key_values=cache, position_ids=pos + i)
+  File "/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/transformers/utils/generic.py", line 841, in wrapper
+    output = func(self, *args, **kwargs)
+  File "/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 506, in forward
+    outputs: BaseModelOutputWithPast = self.model(
+  File "/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/transformers/utils/generic.py", line 915, in wrapper
+    output = func(self, *args, **kwargs)
+  File "/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/transformers/utils/output_capturing.py", line 253, in wrapper
+    outputs = func(self, *args, **kwargs)
+  File "/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 436, in forward
+    hidden_states = decoder_layer(
+  File "/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/transformers/modeling_layers.py", line 93, in __call__
+    return super().__call__(*args, **kwargs)
+  File "/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 323, in forward
+    hidden_states, _ = self.self_attn(
+  File "/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 269, in forward
+    query_states, key_states = apply_rotary_pos_emb(query_states, key_states, cos, sin)
+  File "/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 179, in apply_rotary_pos_emb
+    q_embed = (q * cos) + (rotate_half(q) * sin)
+  File "/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/transformers/models/qwen3/modeling_qwen3.py", line 155, in rotate_half
+    return torch.cat((-x2, x1), dim=-1)
+torch.AcceleratorError: CUDA error: unknown error
+Search for `cudaErrorUnknown' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/hittu/kv-offload/scripts/exp/run_ruler.py", line 242, in <module>
+    main()
+  File "/home/hittu/kv-offload/scripts/exp/run_ruler.py", line 224, in main
+    r = run_one(model, tok, ctx, q, m, MAX_NEW[fam], eos); r.update(cw)
+  File "/home/hittu/kv-offload/scripts/exp/run_ruler.py", line 171, in run_one
+    r.update(smp.done()); r.update(mon.done())
+UnboundLocalError: local variable 'r' referenced before assignment
+[run_exp] finished 2026-11-20 00:21:16 exit 1

@@ -1,0 +1,4 @@
+model.embed_tokens.weight    stored in model-00001-of-00002.safetensors
+lm_head.weight               stored in model-00002-of-00002.safetensors
+shapes: (151936, 2048) (151936, 2048)  dtypes: torch.bfloat16 torch.bfloat16
+bit-identical: True

@@ -1,0 +1,10 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+model loaded: allocated 1351 MiB | RAM used 2873 MiB, avail 2818 MiB, swap used 3 MiB
+
+===== mode: gpu
+    4096 tok: OK   prefill  119.9 s (    34 tok/s) | decode   1.86 tok/s | peak GPU  4401 MiB | cache on cuda:0 | RAM used 3253 MiB, avail 2438 MiB, swap used 3 MiB
+    8192 tok: FAILED  OutOfMemoryError: CUDA out of memory. Tried to allocate 4.00 GiB. GPU 0 has a total capacity of 4.00 GiB of which 0 bytes is free. Including non-PyTorch memor | RAM used 3253 MiB, avail 2437 MiB, swap used 3 MiB
+
+===== mode: offload
+    4096 tok: OK   prefill   76.2 s (    54 tok/s) | decode   1.12 tok/s | peak GPU  3985 MiB | cache on cuda:0 | RAM used 3264 MiB, avail 655 MiB, swap used 3 MiB
+    8192 tok: FAILED  OutOfMemoryError: CUDA out of memory. Tried to allocate 4.00 GiB. GPU 0 has a total capacity of 4.00 GiB of which 1008.45 MiB is free. Including non-PyTorch m | RAM used 3252 MiB, avail 667 MiB, swap used 3 MiB

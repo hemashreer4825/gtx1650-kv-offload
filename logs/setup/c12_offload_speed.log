@@ -1,0 +1,19 @@
+[setup] VRAM: card 4096 MiB, free at start 3296 MiB -> PyTorch hard limit 3040 MiB
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[setup] model loaded: 1350 MiB on GPU | RAM used 2908 MiB, avail 2775 MiB, swap used 241 MiB
+4096 tok correctness: tokens identical to GPU-only: True | first-token logits max abs diff 0.000000
+
+ tokens | GPU-only decode | offload decode | old layout (check 11) | pure KV transfer time per token
+   4096 |      4.35 tok/s |     3.66 tok/s |     0.75 tok/s         | 0.060 s  (=> at most 16.8 tok/s from transfer alone)
+   8192 |      2.69 tok/s |     2.17 tok/s |     1.09 tok/s         | 0.115 s  (=> at most 8.7 tok/s from transfer alone)
+Traceback (most recent call last):
+  File "/home/hittu/kv-offload/scripts/checks/c12_offload_speed.py", line 42, in <module>
+    tb = transfer_bound(L)
+  File "/home/hittu/kv-offload/scripts/checks/c12_offload_speed.py", line 29, in transfer_bound
+    src = torch.empty(n, dtype=torch.float16).pin_memory(); dst = torch.empty(n, dtype=torch.float16, device="cuda")
+torch.AcceleratorError: CUDA error: out of memory
+Search for `cudaErrorMemoryAllocation' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+

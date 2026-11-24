@@ -1,0 +1,138 @@
+=== transformers: cache classes defined in cache_utils.py
+27:class CacheLayerMixin(ABC):
+85:class DynamicLayer(CacheLayerMixin):
+168:class DynamicSlidingWindowLayer(DynamicLayer):
+254:class StaticLayer(CacheLayerMixin):
+365:class StaticSlidingWindowLayer(StaticLayer):
+490:class QuantizedLayer(DynamicLayer):
+570:class QuantoQuantizedLayer(QuantizedLayer):
+625:class HQQQuantizedLayer(QuantizedLayer):
+682:class Cache:
+906:class DynamicCache(Cache):
+1015:class StaticCache(Cache):
+1094:class QuantizedCache(Cache):
+1150:class EncoderDecoderCache(Cache):
+=== transformers: 'offload' mentions in cache_utils.py (first 40)
+57:    def offload(self):
+64:        """In case of layer offloading, this allows to move the data back to the layer's device ahead of time."""
+695:        offloading (`bool`, *optional*, defaults to `False`):
+696:            Whether to perform offloading of the layers to `cpu`, to save GPU memory.
+697:        offload_only_non_sliding (`bool`, *optional*, defaults to `True`):
+698:            If `offloading` is `True`, this further decides if only the non-sliding layers will be offloaded (because
+699:            usually the sliding layers are small in size, so there is no need to offload them, and skipping it is faster).
+706:        offloading: bool = False,
+707:        offload_only_non_sliding: bool = True,
+721:        self.offloading = offloading
+722:        if self.offloading:
+723:            self.only_non_sliding = offload_only_non_sliding
+749:    def offload(self, layer_idx: int, only_non_sliding: bool = True):
+751:        Offload a given `layer_idx`. If `only_non_sliding` is True, it will offload `layer_idx` only if it is a
+756:            self.layers[layer_idx].offload()
+787:        if self.offloading:
+794:        if self.offloading:
+795:            self.offload(layer_idx, self.only_non_sliding)
+926:        offloading (`bool`, *optional*, defaults to `False`):
+927:            Whether to perform offloading of the layers to `cpu`, to save GPU memory.
+928:        offload_only_non_sliding (`bool`, *optional*, defaults to `False`):
+929:            If `offloading` is `True`, this further decides if only the non-sliding layers will be offloaded (because
+930:            usually the sliding layers are small in size, so there is no need to offload them, and skipping it is faster).
+953:        offloading: bool = False,
+954:        offload_only_non_sliding: bool = False,
+1004:                offloading=offloading,
+1005:                offload_only_non_sliding=offload_only_non_sliding,
+1008:            super().__init__(layers=layers, offloading=offloading, offload_only_non_sliding=offload_only_non_sliding)
+1028:        offloading (`bool`, *optional*, defaults to `False`):
+1029:            Whether to perform offloading of the layers to `cpu`, to save GPU memory.
+1030:        offload_only_non_sliding (`bool`, *optional*, defaults to `True`):
+1031:            If `offloading` is `True`, this further decides if only the non-sliding layers will be offloaded (because
+1032:            usually the sliding layers are small in size, so there is no need to offload them, and skipping it is faster).
+1059:        offloading: bool = False,
+1060:        offload_only_non_sliding: bool = True,
+1091:        super().__init__(layers=layers, offloading=offloading, offload_only_non_sliding=offload_only_non_sliding)
+=== transformers: cache_implementation names accepted by generate()
+45:STATIC_CACHE_IMPLEMENTATIONS = ("static", "offloaded_static")
+46:DYNAMIC_CACHE_IMPLEMENTATIONS = ("dynamic", "dynamic_full", "offloaded", "quantized")
+48:DEPRECATED_STATIC_CACHE_IMPLEMENTATIONS = (
+55:ALL_STATIC_CACHE_IMPLEMENTATIONS = STATIC_CACHE_IMPLEMENTATIONS + DEPRECATED_STATIC_CACHE_IMPLEMENTATIONS
+56:ALL_CACHE_IMPLEMENTATIONS = ALL_STATIC_CACHE_IMPLEMENTATIONS + DYNAMIC_CACHE_IMPLEMENTATIONS
+604:        # it with the `generate` as the other would be, so we we cannot add it to ALL_CACHE_IMPLEMENTATIONS
+605:        valid_cache_implementations = ALL_CACHE_IMPLEMENTATIONS + ("paged",)
+=== transformers: Qwen3 model present?
+__init__.py
+__pycache__
+configuration_qwen3.py
+modeling_qwen3.py
+modular_qwen3.py
+=== kvpress: package files
+/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/kvpress:
+__init__.py
+__pycache__
+attention_patch.py
+pipeline.py
+presses
+utils.py
+
+/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/kvpress/presses:
+__init__.py
+__pycache__
+adakv_press.py
+base_press.py
+block_press.py
+cam_press.py
+cap_press.py
+chunk_press.py
+chunkkv_press.py
+compactor_press.py
+composed_press.py
+compression_ratio_decoding_press.py
+criticalkv_press.py
+cur_press.py
+decoding_press.py
+dms_press.py
+duo_attention_press.py
+entropy_gated_chunkkv_press.py
+expected_attention_press.py
+expected_attention_with_stats.py
+fastkvzip_press.py
+finch_press.py
+key_rerotation_press.py
+keydiff_press.py
+knorm_press.py
+kvcompose_press.py
+kvgrad_press.py
+kvzap_press.py
+kvzip_press.py
+lagkv_press.py
+leverage_press.py
+lukv_press.py
+merging_press.py
+non_causal_attention_press.py
+observed_attention_press.py
+per_layer_compression_press.py
+prefill_decoding_press.py
+pyramidkv_press.py
+qfilter_press.py
+random_press.py
+restorekv_press.py
+scorer_press.py
+simlayerkv_press.py
+snapkv_press.py
+streaming_llm_press.py
+think_press.py
+tova_press.py
+=== kvpress: press classes exported
+['AdaKVPress', 'BasePress', 'BlockPress', 'CAMPress', 'CURPress', 'CapPress', 'ChunkKVPress', 'ChunkPress', 'CompactorPress', 'ComposedPress', 'CompressionRatioDecodingPress', 'CriticalAdaKVPress', 'CriticalKVPress', 'DMSPress', 'DecodingPress', 'DuoAttentionPress', 'EntropyGatedChunkKVPress', 'ExpectedAttentionPress', 'ExpectedAttentionStatsPress', 'FastKVzipPress', 'FinchPress', 'KVComposePress', 'KVPressTextGenerationPipeline', 'KVgradPress', 'KVzapPress', 'KVzipPress', 'KeyDiffPress', 'KeyRerotationPress', 'KnormPress', 'LUKVPress', 'LagKVPress', 'LeverageScorePress', 'MergingPress', 'NonCausalAttnPress', 'ObservedAttentionPress', 'PerLayerCompressionPress', 'PrefillDecodingPress', 'PyramidKVPress', 'QFilterPress', 'RandomPress', 'RestoreKVPress', 'ScorerPress', 'SimLayerKVPress', 'SnapKVPress', 'StreamingLLMPress', 'TOVAPress', 'ThinKPress']
+=== kvpress: supported model classes (grep)
+/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/kvpress/utils.py:7:from transformers.models.gemma3.modeling_gemma3 import Gemma3Attention
+/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/kvpress/utils.py:8:from transformers.models.phi3.modeling_phi3 import Phi3Attention
+/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/kvpress/utils.py:9:from transformers.models.qwen3.modeling_qwen3 import Qwen3Attention
+/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/kvpress/utils.py:16:    This function supports multiple attention module types: Phi3Attention, Qwen3Attention, Gemma3Attention,
+/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/kvpress/utils.py:24:        Phi3Attention, Qwen3Attention, Gemma3Attention, or a Llama-like attention module
+/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/kvpress/utils.py:38:    if isinstance(module, Phi3Attention):
+/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/kvpress/utils.py:42:        # Assume Llama-like attention layer
+/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/kvpress/utils.py:50:    if isinstance(module, (Qwen3Attention, Gemma3Attention)):
+/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/kvpress/utils.py:60:    This function supports multiple attention module types: Phi3Attention, Qwen3Attention, Gemma3Attention,
+/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/kvpress/utils.py:68:        Phi3Attention, Qwen3Attention, Gemma3Attention, or a Llama-like attention module
+/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/kvpress/utils.py:80:    if isinstance(module, Phi3Attention):
+/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/kvpress/utils.py:85:        # Assume Llama-like attention layer
+/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/kvpress/utils.py:93:    if isinstance(module, (Qwen3Attention, Gemma3Attention)):

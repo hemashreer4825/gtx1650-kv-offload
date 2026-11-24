@@ -1,0 +1,18 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+PYTORCH_CUDA_ALLOC_CONF = None
+[setup] VRAM: card 4096 MiB, free at start 3296 MiB -> PyTorch hard limit 3040 MiB
+[setup] model loaded: 1351 MiB on GPU | RAM used 2891 MiB, avail 2800 MiB, swap used 3 MiB
+prefill 8192 tok: OK
+
+peak temporary memory per step (MiB above memory at step start) | memory kept after step:
+  layer0.input_layernorm             peak +    128   kept +    32
+  layer0.self_attn                   peak +    256   kept +    64
+  layer0.post_attention_layernorm    peak +    128   kept +    32
+  layer0.mlp                         peak +    120   kept +    32
+  layer27.input_layernorm            peak +    128   kept +    32
+  layer27.self_attn                  peak +    256   kept +    64
+  layer27.post_attention_layernorm   peak +    128   kept +    32
+  layer27.mlp                        peak +    120   kept +    32
+
+KV cache dtype: torch.float16, tokens 8192, expected size 896 MiB
+after prefill: allocated 2255 MiB, reserved 2724 MiB (gap = memory held but unused: 469 MiB)

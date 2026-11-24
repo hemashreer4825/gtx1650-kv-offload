@@ -1,0 +1,10 @@
+[setup] VRAM: card 4096 MiB, free at start 3296 MiB -> PyTorch hard limit 3040 MiB
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[setup] model loaded: 1350 MiB on GPU | RAM used 2647 MiB, avail 3035 MiB, swap used 636 MiB
+KV cache size for 4096 tokens (fp16): 448 MiB
+host_memory_stats keys: ['active_bytes.allocated', 'active_bytes.current', 'active_bytes.freed', 'active_bytes.peak', 'allocated_bytes.allocated', 'allocated_bytes.current', 'allocated_bytes.freed', 'allocated_bytes.peak']
+GPU-only reference: decode 3.40 tok/s | RAM used 2899 MiB, avail 2780 MiB, swap used 669 MiB
+before offload run: pinned held (0.0, 0.0) MiB (allocated, reserved) | RAM used 2903 MiB, avail 2779 MiB, swap used 669 MiB
+[dynamic] after prefill : pinned (allocated, reserved) = (448, 0) MiB | RAM used 2905 MiB, avail 2264 MiB, swap used 669 MiB
+[dynamic] after decode  : pinned (allocated, reserved) = (1552, 0) MiB | RAM used 2897 MiB, avail 1229 MiB, swap used 669 MiB
+[dynamic] decode 0.55 tok/s (GPU-only 3.40) | tokens identical to GPU-only: False

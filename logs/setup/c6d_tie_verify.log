@@ -1,0 +1,23 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+UNTIED: allocated 1944 MiB, nvidia-smi 2301 MiB
+  [untied] [PASS] What is the capital of France? Answer in one word.
+            -> 'Paris'
+  [untied] [PASS] What is 17 multiplied by 23? Give only the number.
+            -> '17 × 23 = 391'
+  [untied] [PASS] Which is the largest planet in our solar system? Answer in one word.
+            -> 'Jupiter'
+  [untied] [FAIL] Complete the sequence: 2, 4, 8, 16, ... Give only the next number.
+            -> 'The sequence is:  \n**2, 4, 8, 16, ...**\n\nThis is a **geometric sequence** where each term is multiplied by 2.\n\n- $ 2 \\times 2 = 4 $  \n- $ 4 \\times 2 = 8 $  \n- $ 8 \\times 2 = 16 $  \n- $'
+
+TIED  : allocated 1359 MiB, nvidia-smi 2313 MiB
+lm_head shares memory with embed_tokens? True
+  [tied] [PASS] What is the capital of France? Answer in one word.
+            -> 'Paris'
+  [tied] [PASS] What is 17 multiplied by 23? Give only the number.
+            -> '17 × 23 = 391'
+  [tied] [PASS] Which is the largest planet in our solar system? Answer in one word.
+            -> 'Jupiter'
+  [tied] [FAIL] Complete the sequence: 2, 4, 8, 16, ... Give only the next number.
+            -> 'The sequence is:  \n**2, 4, 8, 16, ...**\n\nThis is a **geometric sequence** where each term is multiplied by 2.\n\n- $ 2 \\times 2 = 4 $  \n- $ 4 \\times 2 = 8 $  \n- $ 8 \\times 2 = 16 $  \n- $'
+
+output tokens identical untied vs tied, per question: [True, True, True, True]

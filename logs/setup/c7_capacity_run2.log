@@ -1,0 +1,10 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+attention fix: ON (repeat_kv -> memory-efficient SDPA kernel)
+GPU total (torch): 4095 MiB
+model loaded: allocated 1351 MiB | RAM used 2886 MiB, avail 2797 MiB, swap used 2 MiB
+
+===== mode: gpu
+    4096 tok: OK   prefill   40.2 s (   102 tok/s) | decode   3.41 tok/s | peak GPU  2017 MiB | cache on cuda:0 | RAM used 3185 MiB, avail 2506 MiB, swap used 2 MiB
+    8192 tok: OK   prefill   84.3 s (    97 tok/s) | decode   3.13 tok/s | peak GPU  2675 MiB | cache on cuda:0 | RAM used 3196 MiB, avail 2496 MiB, swap used 2 MiB
+   12288 tok: OK   prefill  140.9 s (    87 tok/s) | decode   1.75 tok/s | peak GPU  3335 MiB | cache on cuda:0 | RAM used 3206 MiB, avail 2486 MiB, swap used 2 MiB
+   16384 tok: OK   prefill  259.0 s (    63 tok/s) | decode   0.91 tok/s | peak GPU  3991 MiB | cache on cuda:0 | RAM used 3207 MiB, avail 2482 MiB, swap used 2 MiB

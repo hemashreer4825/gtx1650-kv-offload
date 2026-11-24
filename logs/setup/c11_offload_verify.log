@@ -1,0 +1,19 @@
+[setup] VRAM: card 4096 MiB, free at start 3296 MiB -> PyTorch hard limit 3040 MiB
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[setup] model loaded: 1350 MiB on GPU | RAM used 2829 MiB, avail 2852 MiB, swap used 217 MiB
+
+(1) correctness at 4096 tokens: own offloaded cache vs GPU-only
+  GPU-only :     4096 tok: OK      prefill   20.3 s ( 202 tok/s) | decode  3.82 tok/s | peak GPU  1976 MiB | RAM taken   265 MiB (KV size 448) | RAM used 3353 MiB, avail 2326 MiB, swap used 216 MiB
+  offloaded:     4096 tok: OK      prefill   20.0 s ( 205 tok/s) | decode  0.75 tok/s | peak GPU  1552 MiB | RAM taken   737 MiB (KV size 448) | RAM used 3353 MiB, avail 2326 MiB, swap used 216 MiB
+  16 generated tokens identical: True | first-token logits max abs diff 0.000000
+  GPU-only text : ' we go. There and back again. The grass is green. The sky is'
+  offloaded text: ' we go. There and back again. The grass is green. The sky is'
+
+(2) own offloaded cache: maximum length
+    8192 tok: OK      prefill   46.8 s ( 175 tok/s) | decode  1.09 tok/s | peak GPU  1746 MiB | RAM taken   969 MiB (KV size 896) | RAM used 3358 MiB, avail 2257 MiB, swap used 216 MiB
+   12288 tok: OK      prefill   88.4 s ( 139 tok/s) | decode  0.43 tok/s | peak GPU  1940 MiB | RAM taken  1357 MiB (KV size 1344) | RAM used 3364 MiB, avail 2251 MiB, swap used 216 MiB
+   16384 tok: OK      prefill  143.9 s ( 114 tok/s) | decode  0.23 tok/s | peak GPU  2134 MiB | RAM taken  1828 MiB (KV size 1792) | RAM used 3430 MiB, avail 2223 MiB, swap used 190 MiB
+   20480 tok: OK      prefill  204.3 s ( 100 tok/s) | decode  0.20 tok/s | peak GPU  2328 MiB | RAM taken  2093 MiB (KV size 2240) | RAM used 3329 MiB, avail 2383 MiB, swap used 309 MiB
+   24576 tok: OK      prefill  270.3 s (  91 tok/s) | decode  0.46 tok/s | peak GPU  2522 MiB | RAM taken  2163 MiB (KV size 2688) | RAM used 2769 MiB, avail 2918 MiB, swap used 1679 MiB  <-- INVALID: swap grew 1462 MiB
+
+(3) GPU-only with all fixes: final limit

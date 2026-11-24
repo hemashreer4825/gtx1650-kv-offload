@@ -1,0 +1,7 @@
+# not published (see README: Not included)
+models/
+.venv/
+data/
+third_party/
+__pycache__/
+*.pyc

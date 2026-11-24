@@ -1,0 +1,11 @@
+[setup] VRAM: card 4096 MiB, free at start 3296 MiB -> PyTorch hard limit 3040 MiB
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[setup] model loaded: 1350 MiB on GPU | RAM used 2851 MiB, avail 2830 MiB, swap used 219 MiB
+GPU-only tokens        : [582, 728, 13, 2619, 323, 1182, 1549, 13, 576, 16359, 374, 6176, 13, 576, 12884, 374]
+offload as-is          : [582, 728, 1438, 6684, 46451, 102261, 1057, 10, 31827, 11, 72, 278, 56781, 91, 100783, 62]
+offload + synchronize  : [582, 728, 13, 2619, 323, 1182, 1549, 13, 576, 16359, 374, 6176, 13, 576, 12884, 374]
+prefill (1st token) logits max diff vs GPU-only: as-is 0.0000, synced 0.0000
+as-is  identical: False   first differing generated token index: 2
+synced identical: True   first differing generated token index: None
+decoded GPU-only : ' we go. There and back again. The grass is green. The sky is'
+decoded as-is    : " we go break�现芳/*+ [[',ialressing|无论_"

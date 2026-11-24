@@ -1,0 +1,5 @@
+[setup] VRAM: card 4096 MiB, free at start 3296 MiB -> PyTorch hard limit 3040 MiB
+allocation stopped by: OutOfMemoryError (PyTorch limit)
+allocated 3008 MiB | limit 3040 MiB | free VRAM at start 3296 MiB | driver free now 280 MiB
+read speed first chunk 36.1 GB/s, last chunk 132.2 GB/s
+verdict: PASS - stayed inside real VRAM, no spill

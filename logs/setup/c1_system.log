@@ -1,0 +1,23 @@
+=== GPU / driver
+name, driver_version, memory.total [MiB], memory.used [MiB], compute_cap
+NVIDIA GeForce GTX 1650, 581.83, 4096 MiB, 105 MiB, 7.5
+| NVIDIA-SMI 580.108                Driver Version: 581.83         CUDA Version: 13.0     |
+=== Python
+/usr/bin/python3
+Python 3.10.12
+venv module: OK
+=== CUDA toolkit (nvcc) installed system-wide?
+/usr/local/cuda
+/usr/local/cuda-12
+/usr/local/cuda-12.8
+=== RAM (MiB)
+               total        used        free      shared  buff/cache   available
+Mem:            5925         383        5211           3         329        5398
+Swap:          12288           0       12288
+=== Disk
+/dev/sdd       1007G   29G  928G   3% /
+=== CPU
+CPU(s):                               12
+Model name:                           11th Gen Intel(R) Core(TM) i5-11400H @ 2.70GHz
+=== Pinned (locked) memory limit
+65536

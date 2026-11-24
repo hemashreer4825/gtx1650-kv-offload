@@ -1,0 +1,9 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[original (enable_gqa -> math kernel)] 1000-token forward: extra peak GPU 316 MiB
+[fixed    (repeat_kv -> mem-efficient kernel)] 1000-token forward: extra peak GPU 175 MiB
+next-token logits: max abs diff 0.0234, mean abs diff 0.00445, top-1 token same: True, top-5 same: False
+4 answers token-identical: [True, True, True, True]
+   What is the capital of France? Answer in one  -> 'Paris'
+   What is 17 multiplied by 23? Give only the nu -> '17 × 23 = 391'
+   Which is the largest planet in our solar syst -> 'Jupiter'
+   Complete the sequence: 2, 4, 8, 16, ... Give  -> 'The sequence is:  \n**2, 4, 8, 16, ...**\n\nThis is a **geometr'

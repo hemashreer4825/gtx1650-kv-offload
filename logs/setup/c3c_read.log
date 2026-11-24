@@ -1,0 +1,110 @@
+######## DynamicLayer (cache_utils.py 85-125)
+class DynamicLayer(CacheLayerMixin):
+    """
+    A cache layer that grows dynamically as more tokens are generated. This is the default for generative models.
+    It stores the key and value states as tensors of shape `[batch_size, num_heads, seq_len, head_dim]`.
+    """
+
+    is_sliding = False
+
+    def lazy_initialization(self, key_states: torch.Tensor, value_states: torch.Tensor) -> None:
+        self.dtype, self.device = key_states.dtype, key_states.device
+        self.keys = torch.tensor([], dtype=self.dtype, device=self.device)
+        self.values = torch.tensor([], dtype=self.dtype, device=self.device)
+        self.is_initialized = True
+
+    def update(
+        self,
+        key_states: torch.Tensor,
+        value_states: torch.Tensor,
+        cache_kwargs: dict[str, Any] | None = None,
+    ) -> tuple[torch.Tensor, torch.Tensor]:
+        """
+        Update the key and value caches in-place, and return the necessary keys and value states.
+
+        Args:
+            key_states (`torch.Tensor`): The new key states to cache.
+            value_states (`torch.Tensor`): The new value states to cache.
+            cache_kwargs (`dict[str, Any]`, *optional*): Additional arguments for the cache.
+
+        Returns:
+            tuple[`torch.Tensor`, `torch.Tensor`]: The key and value states.
+        """
+        # Lazy initialization
+        if not self.is_initialized:
+            self.lazy_initialization(key_states, value_states)
+
+        self.keys = torch.cat([self.keys, key_states], dim=-2)
+        self.values = torch.cat([self.values, value_states], dim=-2)
+        return self.keys, self.values
+
+    def get_mask_sizes(self, cache_position: torch.Tensor) -> tuple[int, int]:
+        """Return the length and offset of the cache, used to generate the mask"""
+######## base_press.py forward_hook
+37:def is_prefilling(cache_position: torch.Tensor, q_len: int) -> bool:
+38:    """Return whether the current forward pass is the initial prefill."""
+39:    prefilling = cache_position[-1] + 1 == q_len
+40:    return bool(prefilling.item() if isinstance(prefilling, torch.Tensor) else prefilling)
+78:            Hidden states of the current layer with shape (batch_size, seq_len, hidden_dim).
+81:            Key tensors from the KV cache with shape (batch_size, num_kv_heads, seq_len, head_dim).
+84:            Value tensors from the KV cache with shape (batch_size, num_kv_heads, seq_len, head_dim).
+87:            Attention weights from the layer with shape (batch_size, num_heads, seq_len, seq_len).
+101:    def forward_hook(self, module: nn.Module, input: list[torch.Tensor], kwargs: dict, output: list):
+125:            - cache_position: Position indices indicating where we are in the sequence
+142:        q_len = hidden_states.shape[1]
+145:        if not is_prefilling(kwargs["cache_position"], q_len):
+146:            return output
+162:        return output
+165:    def __call__(self, model: PreTrainedModel) -> Generator:
+203:                hooks.append(layer.self_attn.register_forward_hook(self.forward_hook, with_kwargs=True))
+######## pipeline.py: question handling
+36:    result = pipeline(context="Long text...", question="A question about the long context.", press=press)
+42:        question: Optional[str] = None,
+43:        questions: Optional[list[str]] = None,
+46:        max_new_tokens: int = 50,
+54:        The user can either provide a single question or a list of questions to be asked about the context.
+58:        question : str, optional
+59:            The question to be asked about the context. Exclusive with `questions`.
+60:        questions : list[str], optional
+61:            A list of questions to be asked about the context. Exclusive with `question`.
+70:        max_new_tokens : int, optional
+91:        postprocess_kwargs = {"single_question": questions is None}
+92:        assert question is None or questions is None, "Either question or questions should be provided, not both."
+93:        questions = questions or ([question] if question else [""])
+97:            "questions": questions,
+102:        forward_kwargs = {"press": press, "max_new_tokens": max_new_tokens, "cache": cache}
+105:    def preprocess(
+108:        questions: list[str],
+114:        Apply chat template and tokenize the context and questions.
+124:        questions : list[str]
+136:            Dictionary with "context_ids" and "questions_ids" tensors.
+143:            question_suffix = "\n"  # to separate the question from the answer
+152:            context, question_suffix = context.split(separator)
+154:        # Add question_suffix and answer prefix
+155:        # e.g. for llama3.1, question_suffix="<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n")
+156:        questions = [question + question_suffix + answer_prefix for question in questions]
+158:        # Tokenize the context and questions
+159:        context_ids = self.tokenizer.encode(context, return_tensors="pt", add_special_tokens=False)
+160:        question_ids = [
+161:            self.tokenizer.encode(question, return_tensors="pt", add_special_tokens=False) for question in questions
+165:        if context_ids.shape[1] > max_context_length:
+167:                f"Context length has been truncated from {context_ids.shape[1]} to {max_context_length} tokens."
+169:            context_ids = context_ids[:, :max_context_length]
+171:        return {"context_ids": context_ids, "questions_ids": question_ids}
+173:    def _forward(
+176:        max_new_tokens: int = 50,
+189:            Tokenized inputs with "context_ids" and "questions_ids".
+190:        max_new_tokens : int, default=50
+200:            Generated answers for each input question.
+202:        if isinstance(press, (DecodingPress, PrefillDecodingPress)) and len(input_tensors["questions_ids"]) > 1:
+204:                "DecodingPress is not compatible with multiple questions. Please specify a single question."
+207:        context_ids = input_tensors["context_ids"].to(self.model.device)
+208:        context_length = context_ids.shape[1]
+216:        with press(self.model) if perform_prefill_compression else contextlib.nullcontext():
+219:                input_ids=context_ids,
+233:        with press(self.model) if perform_decoding_compression else contextlib.nullcontext():
+234:            # Greedy decoding for each question
+236:            for question_ids in input_tensors["questions_ids"]:
+241:                answer = self.generate_answer(
+242:                    question_ids=question_ids.to(self.model.device),
+245:                    max_new_tokens=max_new_tokens,

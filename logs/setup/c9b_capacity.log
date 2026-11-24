@@ -1,0 +1,44 @@
+[setup] VRAM: card 4096 MiB, free at start 3296 MiB -> PyTorch hard limit 3040 MiB
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[setup] model loaded: 1351 MiB on GPU | RAM used 2864 MiB, avail 2820 MiB, swap used 2 MiB
+
+===== KV cache: on GPU
+    4096 tok: OK      prefill   18.5 s (  222 tok/s) | decode  4.22 tok/s | peak GPU  2097 MiB | RAM used 3191 MiB, avail 2500 MiB, swap used 2 MiB
+    8192 tok: FAILED  GPU out of memory (limit 3040 MiB) | RAM used 3192 MiB, avail 2500 MiB, swap used 2 MiB
+    6144 tok: OK      prefill   23.5 s (  261 tok/s) | decode  3.54 tok/s | peak GPU  2467 MiB | RAM used 3191 MiB, avail 2500 MiB, swap used 2 MiB
+
+===== KV cache: offloaded to CPU RAM
+    4096 tok: OK      prefill   17.8 s (  230 tok/s) | decode  1.11 tok/s | peak GPU  1665 MiB | RAM used 3194 MiB, avail 734 MiB, swap used 2 MiB
+    8192 tok: FAILED  AcceleratorError: CUDA error: out of memory | RAM used 2278 MiB, avail 62 MiB, swap used 1166 MiB
+Traceback (most recent call last):
+  File "/home/hittu/kv-offload/scripts/checks/c9b_capacity.py", line 42, in <module>
+    if not trial(L, mode == "offload"):
+  File "/home/hittu/kv-offload/scripts/checks/c9b_capacity.py", line 37, in trial
+    del cache; gc.collect(); torch.cuda.empty_cache(); return False
+  File "/home/hittu/kv-offload/.venv/lib/python3.10/site-packages/torch/cuda/memory.py", line 224, in empty_cache
+    torch._C._cuda_emptyCache()
+torch.AcceleratorError: CUDA error: out of memory
+Search for `cudaErrorMemoryAllocation' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+terminate called after throwing an instance of 'c10::AcceleratorError'
+  what():  CUDA error: out of memory
+Search for `cudaErrorMemoryAllocation' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+Exception raised from currentStreamCaptureStatusMayInitCtx at /pytorch/c10/cuda/CUDAGraphsC10Utils.h:71 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x9d (0x788b55b7205d in /home/hittu/kv-offload/.venv/lib/python3.10/site-packages/torch/lib/libc10.so)
+frame #1: <unknown function> + 0xc114 (0x788b55ed8114 in /home/hittu/kv-offload/.venv/lib/python3.10/site-packages/torch/lib/libc10_cuda.so)
+frame #2: <unknown function> + 0xf146be (0x788a465146be in /home/hittu/kv-offload/.venv/lib/python3.10/site-packages/torch/lib/libtorch_cuda.so)
+frame #3: <unknown function> + 0x7f8e4 (0x788b55b538e4 in /home/hittu/kv-offload/.venv/lib/python3.10/site-packages/torch/lib/libc10.so)
+frame #4: c10::TensorImpl::~TensorImpl() + 0x9 (0x788b55b4d279 in /home/hittu/kv-offload/.venv/lib/python3.10/site-packages/torch/lib/libc10.so)
+frame #5: <unknown function> + 0x852b8d (0x788a91052b8d in /home/hittu/kv-offload/.venv/lib/python3.10/site-packages/torch/lib/libtorch_python.so)
+frame #6: <unknown function> + 0x852c21 (0x788a91052c21 in /home/hittu/kv-offload/.venv/lib/python3.10/site-packages/torch/lib/libtorch_python.so)
+<omitting python frames>
+frame #26: <unknown function> + 0x29d90 (0x788b56629d90 in /lib/x86_64-linux-gnu/libc.so.6)
+frame #27: __libc_start_main + 0x80 (0x788b56629e40 in /lib/x86_64-linux-gnu/libc.so.6)
+

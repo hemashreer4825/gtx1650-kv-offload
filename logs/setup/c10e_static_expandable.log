@@ -1,0 +1,6 @@
+PYTORCH_CUDA_ALLOC_CONF = expandable_segments:True | cache: static
+[setup] VRAM: card 4096 MiB, free at start 3296 MiB -> PyTorch hard limit 3040 MiB
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[setup] model loaded: 1350 MiB on GPU | RAM used 2698 MiB, avail 2982 MiB, swap used 611 MiB
+4096-token check: static tokens identical to dynamic: True | decode dynamic 3.04 vs static 4.36 tok/s
+   10240 tok: FAILED  out of memory (limit 3040 MiB)

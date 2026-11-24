@@ -1,0 +1,7 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+(a) raw GEMM 2048x2048 @ 2048x6144 (one MLP projection over 2048 tokens):
+    torch.float16   158.98 ms  (  0.32 TFLOPS)
+    torch.float32    47.07 ms  (  1.09 TFLOPS)
+(b)/(c) model, NF4 weights:
+    compute torch.float16 : prefill 2048 tok   19.5 s (   105 tok/s) | decode   6.41 tok/s | answers correct 3/3
+    compute torch.float32 : prefill 2048 tok    6.6 s (   311 tok/s) | decode   6.58 tok/s | answers correct 3/3

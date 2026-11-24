@@ -1,0 +1,8 @@
+stopped RULER downloader
+before: html 169, repo 10
+after : html 169 of 169, repo 49 of 49
+html URLs without a file (failed in RULER's downloader):
+49 essays from GitHub, 169 from paulgraham.com
+chars 3048891 words 525469
+-rw-r--r-- 1 hittu hittu 3108621 Nov 19 20:27 PaulGrahamEssays.json
+8d31e1b660e0f2180bcca6d238e18f77921df9d158611582b860da1762b6d3dd  PaulGrahamEssays.json

@@ -1,0 +1,249 @@
+######## cache_utils.py 27-84 (layer offload / prefetch)
+class CacheLayerMixin(ABC):
+    """Base, abstract class for a single layer's cache."""
+
+    is_compileable = False
+
+    def __init__(self):
+        self.keys: torch.Tensor | None = None
+        self.values: torch.Tensor | None = None
+        self.is_initialized = False
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}"
+
+    @abstractmethod
+    def lazy_initialization(self, key_states: torch.Tensor, value_states: torch.Tensor) -> None: ...
+
+    @abstractmethod
+    def update(
+        self, key_states: torch.Tensor, value_states: torch.Tensor, cache_kwargs: dict[str, Any] | None = None
+    ) -> tuple[torch.Tensor, torch.Tensor]: ...
+
+    @abstractmethod
+    def get_mask_sizes(self, cache_position: torch.Tensor) -> tuple[int, int]: ...
+
+    @abstractmethod
+    def get_seq_length(self) -> int: ...
+
+    @abstractmethod
+    def get_max_cache_shape(self) -> int: ...
+
+    def offload(self):
+        """Offload this layer's data to CPU device."""
+        if self.is_initialized:
+            self.keys = self.keys.to("cpu", non_blocking=True)
+            self.values = self.values.to("cpu", non_blocking=True)
+
+    def prefetch(self):
+        """In case of layer offloading, this allows to move the data back to the layer's device ahead of time."""
+        if self.is_initialized and self.keys.device != self.device:
+            self.keys = self.keys.to(self.device, non_blocking=True)
+            self.values = self.values.to(self.device, non_blocking=True)
+
+    def reset(self) -> None:
+        """Resets the cache values while preserving the objects"""
+        if self.is_initialized:
+            self.keys.zero_()
+            self.values.zero_()
+        # This attribute is set on several Layers
+        if hasattr(self, "cumulative_length"):
+            self.cumulative_length = 0
+
+    def reorder_cache(self, beam_idx: torch.LongTensor) -> None:
+        """Reorders this layer's cache for beam search."""
+        if self.get_seq_length() > 0:
+            self.keys = self.keys.index_select(0, beam_idx.to(self.keys.device))
+            self.values = self.values.index_select(0, beam_idx.to(self.values.device))
+
+
+######## cache_utils.py 740-800 (Cache prefetch/offload/update)
+            except ValueError:
+                layer_idx = self.is_sliding.index(False)
+        else:
+            layer_idx = layer_idx if layer_idx < len(self.layers) else 0
+
+        # Prefetch
+        with self.prefetch_stream if _is_torch_greater_or_equal_than_2_7 else torch.cuda.stream(self.prefetch_stream):
+            self.layers[layer_idx].prefetch()
+
+    def offload(self, layer_idx: int, only_non_sliding: bool = True):
+        """
+        Offload a given `layer_idx`. If `only_non_sliding` is True, it will offload `layer_idx` only if it is a
+        non-sliding layer. Note that we do it on the default stream, so that we ensure all earlier
+        computation in the layer's `update` methods are finished.
+        """
+        if not (only_non_sliding and self.is_sliding[layer_idx]):
+            self.layers[layer_idx].offload()
+
+    def update(
+        self,
+        key_states: torch.Tensor,
+        value_states: torch.Tensor,
+        layer_idx: int,
+        cache_kwargs: dict[str, Any] | None = None,
+    ) -> tuple[torch.Tensor, torch.Tensor]:
+        """
+        Updates the cache with the new `key_states` and `value_states` for the layer `layer_idx`.
+
+        Parameters:
+            key_states (`torch.Tensor`):
+                The new key states to cache.
+            value_states (`torch.Tensor`):
+                The new value states to cache.
+            layer_idx (`int`):
+                The index of the layer to cache the states for.
+            cache_kwargs (`dict[str, Any]`, *optional*):
+                Additional arguments for the cache subclass. These are specific to each subclass and allow new types of
+                cache to be created.
+
+        Return:
+            A tuple containing the updated key and value states.
+        """
+        # In this case, the `layers` were not provided, and we must append as much as `layer_idx`
+        if self.layer_class_to_replicate is not None:
+            while len(self.layers) <= layer_idx:
+                self.layers.append(self.layer_class_to_replicate())
+
+        if self.offloading:
+            # Wait for the stream to finish if needed, and start prefetching the next layer
+            torch.cuda.default_stream(key_states.device).wait_stream(self.prefetch_stream)
+            self.prefetch(layer_idx + 1, self.only_non_sliding)
+
+        keys, values = self.layers[layer_idx].update(key_states, value_states, cache_kwargs)
+
+        if self.offloading:
+            self.offload(layer_idx, self.only_non_sliding)
+
+        return keys, values
+
+    def early_initialization(
+        self, batch_size: int, num_heads: int, head_dim: int, dtype: torch.dtype, device: torch.device
+######## pin_memory anywhere in cache_utils?
+60:            self.keys = self.keys.to("cpu", non_blocking=True)
+61:            self.values = self.values.to("cpu", non_blocking=True)
+66:            self.keys = self.keys.to(self.device, non_blocking=True)
+67:            self.values = self.values.to(self.device, non_blocking=True)
+724:            self.prefetch_stream = torch.Stream() if _is_torch_greater_or_equal_than_2_7 else torch.cuda.Stream()
+######## streaming_llm_press.py
+from dataclasses import dataclass
+import torch
+from torch import nn
+from kvpress.presses.scorer_press import ScorerPress
+@dataclass
+class StreamingLLMPress(ScorerPress):
+    """
+    StreamingLLM: Window-based KV cache compression with sink tokens.
+    Implements sliding window approach preserving first few tokens (sink tokens)
+    and most recent tokens, while pruning middle tokens.
+    Based on StreamingLLM (https://arxiv.org/abs/2309.17453).
+    To fully match the implementation described in the paper, use the KeyRerotationPress wrapper (see issue #158).
+    Parameters
+    ----------
+    compression_ratio : float, default=0.0
+        Fraction of key-value pairs to remove during compression.
+    n_sink : int, default=4
+        Number of initial tokens to always preserve (sink tokens).
+        These tokens are never pruned and serve as "attention sinks" that help
+        maintain model stability. Language models often assign high attention
+        weights to early tokens regardless of semantic content.
+    """
+    compression_ratio: float = 0.0
+    n_sink: int = 4
+    def score(
+        self,
+        module: nn.Module,
+        hidden_states: torch.Tensor,
+        keys: torch.Tensor,
+        values: torch.Tensor,
+        attentions: torch.Tensor,
+        kwargs,
+    ) -> torch.Tensor:
+        k_len = keys.shape[2]
+        assert k_len > self.n_sink, f"Input should contain more tokens than n_sink={self.n_sink}"
+        n_pruned = k_len - int(k_len * (1 - self.compression_ratio))
+        scores = torch.ones_like(keys[..., 0])
+        scores[:, :, self.n_sink : self.n_sink + n_pruned] = 0
+        return scores
+######## snapkv_press.py
+# SPDX-FileCopyrightText: Copyright (c) 1993-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+import math
+from dataclasses import dataclass
+import torch
+from torch import nn
+from torch.nn import functional as F
+from transformers.models.llama.modeling_llama import repeat_kv, rotate_half
+from kvpress.presses.scorer_press import ScorerPress
+from kvpress.utils import get_prerope_query_states
+@dataclass
+class SnapKVPress(ScorerPress):
+    """
+    SnapKV: Attention-based KV cache compression using recent token patterns.
+    Uses attention patterns of the most recent tokens to estimate importance
+    of previous key-value pairs.
+    Based on SnapKV (https://arxiv.org/abs/2404.14469).
+    Parameters
+    ----------
+    compression_ratio : float, default=0.0
+        Fraction of key-value pairs to remove during compression.
+    window_size : int, default=64
+        Number of recent tokens to use for computing attention-based importance scores.
+    kernel_size : int, default=5
+        Size of the pooling kernel applied to attention weights for smoothing.
+    """
+    compression_ratio: float = 0.0
+    window_size: int = 64
+    kernel_size: int = 5
+    @staticmethod
+    def compute_window_attention(module, hidden_states, keys, window_size, position_embeddings):
+        """
+        Compute the last window_size queries and associated attention weights for the first q_len - window_size keys.
+        """
+        bsz, _, k_len, _ = keys.shape
+        num_heads = module.config.num_attention_heads
+        head_dim = module.head_dim
+        num_key_value_groups = num_heads // module.config.num_key_value_heads
+        # Get last window_size queries
+        query_states = get_prerope_query_states(module, hidden_states[:, -window_size:])
+        # Apply RoPE
+        cos, sin = position_embeddings
+        cos, sin = cos[:, -window_size:], sin[:, -window_size:]
+        query_states = (query_states * cos.unsqueeze(1)) + (rotate_half(query_states) * sin.unsqueeze(1))
+        # Compute attention for first q_len - window_size tokens
+        key_states = repeat_kv(keys, num_key_value_groups)
+        attn_weights = torch.matmul(query_states, key_states.transpose(2, 3)) / math.sqrt(head_dim)
+        attention_mask = torch.ones_like(attn_weights) * float("-inf")
+        attention_mask = torch.triu(attention_mask, diagonal=k_len - window_size + 1)
+        attn_weights += attention_mask
+        attn_weights = nn.functional.softmax(attn_weights, dim=-1, dtype=torch.float32).to(query_states.dtype)
+        attn_weights = attn_weights[..., :-window_size]
+        return attn_weights
+    def score(
+        self,
+        module: nn.Module,
+        hidden_states: torch.Tensor,
+        keys: torch.Tensor,
+        values: torch.Tensor,
+        attentions: torch.Tensor,
+        kwargs,
+    ) -> torch.Tensor:
+        bsz, num_key_value_heads, k_len, _ = keys.shape
+        num_key_value_groups = module.config.num_attention_heads // num_key_value_heads
+        assert (
+            hidden_states.shape[1] > self.window_size
+        ), f"Query length {hidden_states.shape[1]} should be greater than the window size {self.window_size}"
+        if attentions is not None:
+            attn_weights = attentions[..., -self.window_size :, : -self.window_size]
+        else:
+            attn_weights = self.compute_window_attention(
+                module, hidden_states, keys, self.window_size, kwargs["position_embeddings"]
+            )
+        scores = attn_weights.mean(dim=-2)
+        scores = F.avg_pool1d(scores, kernel_size=self.kernel_size, padding=self.kernel_size // 2, stride=1)
+        # Average per group (https://github.com/FasterDecoding/SnapKV/issues/22)
+        scores = scores.view(bsz, num_key_value_heads, num_key_value_groups, k_len - self.window_size)
+        scores = scores.mean(2)
+        # Add back the observation window. Use max score to make sure the window is not pruned.
+        scores = F.pad(scores, (0, self.window_size), value=scores.max().item() + 1)
+        return scores

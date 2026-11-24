@@ -1,0 +1,11 @@
+torch          2.11.0+cu128
+transformers   5.2.0
+accelerate     1.15.0
+bitsandbytes   0.50.2
+kvpress        ?
+torch CUDA build: 12.8
+GPU seen by torch: True NVIDIA GeForce GTX 1650
+GPU capability: (7, 5)
+archs compiled into torch: ['sm_75', 'sm_80', 'sm_86', 'sm_90', 'sm_100', 'sm_120']
+fp16 matmul on GPU OK: True
+bitsandbytes 4-bit layer on GPU OK: (4, 256) finite: True
