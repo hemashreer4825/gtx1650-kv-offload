@@ -13,6 +13,15 @@ CPU RAM, compared with a truncated (compressed) cache kept strictly in GPU VRAM.
 the pilot and main runs, and the results. It was written from the log files in this repository. Paths in it are
 relative to the project folder (`~/kv-offload/` on the test laptop), which is the root of this repository.
 
+## White paper
+
+`paper/kv_cache_offloading_4gb_gpu.pdf`: *KV Cache Offloading vs Truncated Caches on a 4 GB GPU* (17 pages, with
+both figures). Every number in it was re-checked on 2026-11-24 against `results/exp/main.jsonl` and
+`EXPERIMENT_RECORD.md`; the two scripts used for that are in `scripts/paper_checks/`
+(`verify_paper.py`: run status, output identity GPU-only vs offloading, input sizes, clocks, temperatures, waits,
+per-task speed spread, peak memory, SnapKV outputs; `verify_needles.py`: where each answer sits in the input and which
+ones StreamingLLM returned). The references were checked against arXiv, NeurIPS, ICLR and USENIX pages.
+
 ## Layout
 
 | Folder | What it is |
@@ -21,6 +30,8 @@ relative to the project folder (`~/kv-offload/` on the test laptop), which is th
 | `scripts/exp/` | Experiment: RULER download and data generation (`e1_*`, `e2_*`, `e3_*`), runner `run_ruler.py` started by `run_exp.sh`, summary `summarize.py`, helper scripts used during the run. |
 | `results/exp/` | Measured data: `main.jsonl` (one record per run), `main_summary.txt` / `.csv` (tables), and the two pilot runs (`pilot1_throttled.jsonl` was stopped because the GPU overheated, see record 6c). |
 | `logs/setup/` | Console output of every setup check (cited in the record). |
+| `paper/` | The white paper (PDF). |
+| `scripts/paper_checks/` | Scripts that recompute the paper's numbers from the raw results. |
 | `logs/exp/` | Console output of RULER preparation, pilots and the main run, including the two failed starts (record 6e). |
 
 ## Not included
